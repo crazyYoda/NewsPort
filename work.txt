@@ -1,0 +1,115 @@
+
+# Создаём пользователей
+
+user1 = User.objects.create_user(username='Дмитрий Косырев')
+user2 = User.objects.create_user(username='Максим Шевченко')
+user3 = User.objects.create_user(username='Кирилл Аношин')
+user4 = User.objects.create_user(username='Юрий Голышак')
+
+
+# Создаём авторов
+
+Author.objects.create(authorUser=user1)
+Author.objects.create(authorUser=user2)
+Author.objects.create(authorUser=user3)
+Author.objects.create(authorUser=user4)
+
+# Создаем категории
+
+Category.objects.create(name='Политика')
+Category.objects.create(name='IT')
+Category.objects.create(name='Финансы')
+Category.objects.create(name='Спорт')
+
+
+
+# Cоздаём первый пост - новость
+
+author = Author.objects.get(id=1)
+
+Post.objects.create(author=author, categoryType='NW', title='Китай признался, что у него "нет голоса". И учится агрессии', text = 'На этих днях необычайно живой отклик в нашей стране вызвало высказывание работающего в Брукингском институте (США) китайца Ли Чэна: Россия и Китай — такие страны, которые не может погубить никто, кроме них самих. То ес
+ть опасаться им надо подрыва изнутри, а не извне. Проблема в том, что очень трудно разделить эти вот "извне" и "изнутри", если речь идет о глобальных идеологических битвах. Кто-то запуска
+ет пропагандистскую фальшивку из-за наших пределов, она пересекает эфемерные границы информационного поля и из внешнего фактора агрессии становится внутренним. Как от этого защищаться? И
+не лучше ли сразу наступать? На эти темы в Пекине прошло совещание экспертов с членами политбюро правящей партии, с участием главы государства Си Цзиньпина. Сейчас начали печатать краткие
+ выдержки из его выступления, так же как и экспертные оценки таковых. И главное, что видно, — речь пока всего лишь о том, чтобы найти правильную стратегию и тактику противостояния пропага
+ндистcкой войне, неустанно ведущейся Западом против Китая (против России эта война началась гораздо раньше). То есть стратегии и тактики внешней пропаганды еще нет, а та, что есть, призна
+на слабой.')
+
+author1 = Author.objects.get(id=2)
+
+Post.objects.create(author=author1, categoryType='NW', title='Создатель Ethereum высказался о будущем криптовалют и отношении к Dogecoin', text='Сооснователь Ethereum Виталик Бутерин принял участие в трёхчасовом подкасте исследователя искусственного интеллекта Лекса Фридмана (Lex Fridman). Он поделился своим мнением о Dogecoin и прокомментировал актуальные тенденции криптовалютного рынка.В ходе интервью Бутерину был задан вопрос, боится ли он «собачьих» криптовалют, намекая в первую очередь на мемную Dogecoin, а также, на Shiba Inu. На это предприниматель ответил, что не считает, что они конкурируют. Тем не менее, Бутерин сказал, что в чём-то Ethereum по духу даже близок к Dogecoin. Он также не против объединения подобных токенов с Ethereum и видит в таком слиянии перспективы для пользователей.
+	Бутерин не питает иллюзий касательно того, что криптовалюты могут кардинально изменить мир в лучшую сторону. Он не считает, что даже в том случае, если цифровые деньги полностью заменят наличные, прекратятся войны и внезапно наступит мир во всём мире.')
+
+author2 = Author.objects.get(id=3)
+
+Post.objects.create(author=author2, categoryType='AR', title='О фрилансе простыми словами. Плюсы и минусы', text='Конец декабря, время спада деловой активности и «давай после нового года», время, когда мегасупертоп персоны отдыхают, стартапы не стартапят, можно спуститься на землю и немного поговорить в фрилансе и фрилансерах.Причем поговорить о совсем простых вещах, для тех, чей путь из теплого офиса в свободное плавание под названием фриланс только начинается, кто не знает, что это, а таких, поверьте, из 90 миллионов пользователей Рунета большинство.
+
+Побуду для продвинутых «Капитаном Очевидность», а для остальных… сами и решите.
+
+Итак, этот материал даже не образовательного, а скорее информационного характера о том, что такое фриланс, откуда он взялся и с чем его едят и как он правильно называется, где нужно ставить ударение и его плюсах и минусах.
+
+Первое упоминание о фрилансерах было в романе Вальтера Скота «Айвенго», где так называли свободного копьеносца («free» - свободный, «lance» - копье). Так что, по большому счету, с моей точки зрения, называть можно как угодно. Я, например, делаю ударение на «free», на свободу, а кто-то делает ударение на «lance» - копье. Так что по сути, все равно как называть: главное – быть успешным, достойным, отвечать за себя, свои действия и поступки.')
+
+author3 = Author.objects.get(id=4)
+
+Post.objects.create(author=author3, categoryType='AR', title='Ввалить Спахичу мечтал каждый из «Шинника». Первым не выдержал Бикей — ка-а-ак дал с головы...', text='Приехав по весне в Ярославль писать о тонущем «Шиннике», встретился я с одним из самых известных футболистов этой команды. Даже у «Шинника» случались звездные времена, когда добиралась эта команда до еврокубков. А футболисты играли в ней замечательные. Спахич, Юрич, Ширко, Погребняк... Или вот защитник Ренат Дубинский. Это его только-только принявший сборную Валерий Газзаев включил в «список 59». Всем нам памятный.Кто-то из того списка стал звездой и миллионером. У кого-то — успехи впереди. Ренат приехал ко мне в гостиницу, сели в холле. Так мило поговорили, что выкраивать куски для репортажа смешно и нелепо. Стоит печатать целиком.')
+
+# Присваиваем категории
+
+Post.objects.get(id=1).postCategory.add(Category.objects.get(id=1))
+Post.objects.get(id=2).postCategory.add(Category.objects.get(id=2))
+Post.objects.get(id=2).postCategory.add(Category.objects.get(id=3))
+Post.objects.get(id=3).postCategory.add(Category.objects.get(id=2))
+Post.objects.get(id=4).postCategory.add(Category.objects.get(id=4))
+
+# Создаем комментарии
+
+Comment.objects.create(commentPost=Post.objects.get(id=1), commentUser=Author.objects.get(id=1).authorUser, comment="some text by author")
+Comment.objects.create(commentPost=Post.objects.get(id=2), commentUser=Author.objects.get(id=2).authorUser, comment="another text by author")
+Comment.objects.create(commentPost=Post.objects.get(id=3), commentUser=Author.objects.get(id=3).authorUser, comment="some text by author")
+Comment.objects.create(commentPost=Post.objects.get(id=4), commentUser=Author.objects.get(id=2).authorUser, comment="some another text by author")
+
+# Лайки и дислайки
+
+Post.objects.get(id=1).like()
+Post.objects.get(id=2).dislike()
+Post.objects.get(id=3).like()
+Post.objects.get(id=4).like()
+
+
+Comment.objects.get(id=1).like()
+Comment.objects.get(id=2).dislike()
+Comment.objects.get(id=3).like()
+Comment.objects.get(id=3).like()
+Comment.objects.get(id=3).dislike()
+Comment.objects.get(id=3).dislike()
+Comment.objects.get(id=4).like()
+
+# Обновляем рейтинги
+
+a=Author.objects.get(id=1)
+a.update_rating()
+
+b=Author.objects.get(id=2)
+b.update_rating()
+
+c=Author.objects.get(id=3)
+c.update_rating()
+
+d=Author.objects.get(id=4)
+d.update_rating()
+
+
+
+
+
+sort = Author.objects.order_by('-ratingAuthor')[:1]
+f'Автор: {sort[0].authorUser.username} с рейтингом: {sort[0].ratingAuthor}'
+
+Post.objects.all().order_by('-rating').values('time_post', 'author__authorUser__username', 'rating', 'title', 'text')[0]
+
+Comment.objects.all().order_by('-rating').values()[0]
+
+
+
+

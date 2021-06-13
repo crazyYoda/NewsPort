@@ -1,0 +1,37 @@
+<!--  наследуемся от шаблона default.html, который мы создавали ещё во времена flatpages -->
+{% extends 'flatpages/default.html' %}
+
+{% load custom_filters %}
+
+{% block title %}
+Posts
+{% endblock title %}
+
+<!-- В контенте на странице мы выводим сам товар, ID которого было передано в адрес -->
+{% block content %}
+    <table>
+        <tr>
+            <td>
+                Заголовок
+            </td>
+            <td>
+                Дата публикации
+            </td>
+            <td>
+                Текст
+            </td>
+        </tr>
+        <tr>
+            <td>
+                {{ post.title|censor|truncatewords:4 }}
+            </td>
+            <td>
+                {{ post.time_post|date:'d-M-Y H:m' }}
+            </td>
+            <td>
+                {{ post.text|censor }}
+            </td>
+        </tr>
+    </table>
+
+{% endblock content %}

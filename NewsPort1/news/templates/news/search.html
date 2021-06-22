@@ -1,0 +1,42 @@
+<!--  наследуемся от шаблона default.html -->
+{% extends 'flatpages/default.html' %}
+
+{% load custom_filters %}
+
+{% block title %} SEARCH {% endblock title %}
+{% block content %}
+<form method="GET">
+    {{ filter.form }}
+    <input type="submit" value="Найти">
+</form>
+
+<table>
+    <thead>
+        <th>
+            Заголовок
+        </th>
+        <th>
+            Дата публикации
+        </th>
+        <th>
+            Автор
+        </th>
+
+    </thead>
+    {% for post in filter.qs %} <!-- поменяем products на filter.qs, т. к. теперь мы забираем уже отобранную по каким-то параметрам информацию -->
+    <tr>
+        <td>
+            {{ post.title|censor|truncatewords:3 }}
+        </td>
+        <td>
+            {{ post.time_post|date:'d M Y' }}
+        </td>
+        <td>
+            {{ post.author }}
+        </td>
+
+    </tr>
+    {% endfor %}
+</table>
+
+{% endblock content %}

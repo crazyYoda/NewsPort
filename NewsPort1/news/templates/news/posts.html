@@ -1,0 +1,68 @@
+<!--  наследуемся от шаблона default.html, который мы создавали ещё во времена flatpages -->
+{% extends 'flatpages/default.html' %}
+
+{% load custom_filters %}
+
+{% block title %}
+Posts
+{% endblock title %}
+
+<!-- В контенте на странице мы выводим все товары -->
+{% block content %}
+<h1>Все посты</h1>
+<h3> Всего {{ posts|length }} постов </h3>
+<hr>
+{% if posts %}
+    <table>
+        <tr>
+            <td>
+                Заголовок
+            </td>
+            <td>
+                Дата публикации
+            </td>
+            <td>
+                Текст
+            </td>
+        </tr>
+    {% for post in posts %}
+        <tr>
+            <td>
+                {{ post.title|censor|truncatewords:3 }}
+            </td>
+            <td>
+                {{ post.time_post|date:'d M Y' }}
+            </td>
+            <td>
+                {{ post.text|censor|truncatechars:50 }}
+            </td>
+        </tr>
+    {% endfor %}
+    </table>
+<!-- Проверяем что поддерживается постраничный вывод -->
+{% if is_paginated %}
+    <!-- Если доступна предыдущая страница, то даем ссылку на неё и самую первую страницу-->
+    {% if page_obj.has_previous %}
+    <a href="?page=1">First</a>
+    <a href="?page={{ page_obj.previous_page_number }}"><<<</a>
+    {% endif %}
+
+    <!-- Поазываем только текущую страницу и ближайшие к ней, чтоьы список не тянулся -->
+    {% for num in page_obj.paginator.page_range %}
+        {% if page_obj.number == num %}
+            <a>{{ num }}</a>
+        {% elif num > page_obj.number|add:'-3' and num < page_obj.number|add:'3' %}
+            <a href="?page={{ num }}">{{ num }}</a>
+        {% endif %}
+    {% endfor %}
+
+    <!-- Если есть следующая страница, то даём ссылку на неё и на самую последнюю страницу -->
+    {% if page_obj.has_next %}
+        <a href="?page={{ page_obj.next_page_number }}">>>></a>
+        <a href="?page={{ page_obj.paginator.num_pages }}">Last</a>
+    {%endif%}
+
+{% endif %}
+{% endif %}
+
+{% endblock content %}

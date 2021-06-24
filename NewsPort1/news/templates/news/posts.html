@@ -26,10 +26,15 @@ Posts
             </td>
         </tr>
     {% for post in posts %}
+
         <tr>
             <td>
-                {{ post.title|censor|truncatewords:3 }}
-            </td>
+            <a href="{% url 'post_detail' post.id %}">{{ post.title }}</a>
+            <a href="{% url 'post_update' post.id %}"><u>Редактировать</u></a> <!-- добавим ссылку на редактирование -->
+
+            <a href="{% url 'post_delete' post.id %}"><u> Удалить </u></a> <!-- добавим ссылку на удаление -->
+        </td>
+
             <td>
                 {{ post.time_post|date:'d M Y' }}
             </td>
@@ -37,8 +42,11 @@ Posts
                 {{ post.text|censor|truncatechars:50 }}
             </td>
         </tr>
+
     {% endfor %}
     </table>
+<a href="{% url 'posts_create' %}">Добавить новый пост</a> <br>
+
 <!-- Проверяем что поддерживается постраничный вывод -->
 {% if is_paginated %}
     <!-- Если доступна предыдущая страница, то даем ссылку на неё и самую первую страницу-->
@@ -64,5 +72,7 @@ Posts
 
 {% endif %}
 {% endif %}
+
+
 
 {% endblock content %}

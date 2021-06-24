@@ -1,13 +1,11 @@
-<!--  наследуемся от шаблона default.html -->
 {% extends 'flatpages/default.html' %}
 
 {% load custom_filters %}
 
-{% block title %}
-Posts
-{% endblock title %}
+{% block title %} Posts {% endblock title %}
 
 {% block content %}
+<h2>Вы действительно хотите удалить этот пост?</h2>
     <table>
         <tr>
             <td>
@@ -20,7 +18,6 @@ Posts
                 Текст
             </td>
         </tr>
-
         <tr>
             <td>
                 {{ post.title|censor|truncatewords:4 }}
@@ -32,8 +29,8 @@ Posts
                 {{ post.text|censor }}
             </td>
         </tr>
-
     </table>
-
-
+<form method="POST">
+    {% csrf_token %}
+    <input type="submit" value="подтвердить"></form>
 {% endblock content %}

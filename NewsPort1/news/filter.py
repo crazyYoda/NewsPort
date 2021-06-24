@@ -9,5 +9,5 @@ class PostsFilter(FilterSet):
         fields = {
             'title': ['icontains'],
             'time_post': ['gte'],
-            'author__authorUser__username': ['icontains'],
+            'author__authorUser': ['exact'],
         }

@@ -1,11 +1,8 @@
-<!--  наследуемся от шаблона default.html -->
 {% extends 'flatpages/default.html' %}
 
 {% load custom_filters %}
 
-{% block title %}
-Posts
-{% endblock title %}
+{% block title %} Posts {% endblock title %}
 
 {% block content %}
     <table>
@@ -20,7 +17,6 @@ Posts
                 Текст
             </td>
         </tr>
-
         <tr>
             <td>
                 {{ post.title|censor|truncatewords:4 }}
@@ -32,8 +28,6 @@ Posts
                 {{ post.text|censor }}
             </td>
         </tr>
-
     </table>
-
 
 {% endblock content %}

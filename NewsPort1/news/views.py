@@ -84,10 +84,11 @@ class PostUpdateView(LoginRequiredMixin, PermissionRequiredMixin, UpdateView):
 
 
 # дженерик для удаления поста
-class PostDeleteView(LoginRequiredMixin, DeleteView):
+class PostDeleteView(LoginRequiredMixin, PermissionRequiredMixin, DeleteView):
     template_name = 'post_delete.html'
     queryset = Post.objects.all()
     success_url = '/posts/'
+    permission_required = ('news.delete_post',)
 
 
 

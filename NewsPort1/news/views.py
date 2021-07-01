@@ -1,8 +1,14 @@
-from django.views.generic import ListView, DetailView, UpdateView, CreateView, DeleteView
+from django.views.generic import ListView, DetailView, UpdateView, CreateView, DeleteView, TemplateView
 from .models import Post
 from datetime import datetime
 from .filter import PostsFilter
 from .forms import PostForm
+
+from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMixin
+
+from django.contrib.auth.models import Group
+from django.contrib.auth.decorators import login_required
+from django.shortcuts import redirect
 
 
 class PostsList(ListView):
@@ -35,9 +41,17 @@ class PostDetailView(DetailView):
     queryset = Post.objects.all()
 
 # дженерик для создания объекта
-class PostCreateView(CreateView):
+class PostCreateView(LoginRequiredMixin, PermissionRequiredMixin, CreateView):
     template_name = 'posts_create.html'
     form_class = PostForm
+    permission_required = ('news.add_post',)
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['is_not_premium'] = not self.request.user.groups.filter(name='authors').exists()
+        return context
+
+
 
 
 # class PostsDetailView(DetailView):
@@ -58,9 +72,10 @@ class PostSearch(ListView):
 
 
 # дженерик для редактирования объекта
-class PostUpdateView(UpdateView):
+class PostUpdateView(LoginRequiredMixin, PermissionRequiredMixin, UpdateView):
     template_name = 'posts_create.html'
     form_class = PostForm
+    permission_required = ('news.change_post',)
 
     # метод get_object мы используем вместо queryset, чтобы получить информацию об объекте, который мы собираемся редактировать
     def get_object(self, **kwargs):
@@ -69,7 +84,17 @@ class PostUpdateView(UpdateView):
 
 
 # дженерик для удаления поста
-class PostDeleteView(DeleteView):
+class PostDeleteView(LoginRequiredMixin, DeleteView):
     template_name = 'post_delete.html'
     queryset = Post.objects.all()
     success_url = '/posts/'
+
+
+
+@login_required
+def upgrade_me(request):
+    user = request.user
+    premium_group = Group.objects.get(name='authors')
+    if not request.user.groups.filter(name='authors').exists():
+        premium_group.user_set.add(user)
+    return redirect('/create/')

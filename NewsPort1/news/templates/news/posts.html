@@ -1,4 +1,4 @@
-<!--  наследуемся от шаблона default.html, который мы создавали ещё во времена flatpages -->
+
 {% extends 'flatpages/default.html' %}
 
 {% load custom_filters %}
@@ -7,7 +7,7 @@
 Posts
 {% endblock title %}
 
-<!-- В контенте на странице мы выводим все товары -->
+<!-- В контенте на странице мы выводим все посты -->
 {% block content %}
 <h1>Все посты</h1>
 <h3> Всего {{ posts|length }} постов </h3>

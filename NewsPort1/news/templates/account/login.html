@@ -1,0 +1,32 @@
+{% extends 'flatpages/default.html' %}
+
+{% load socialaccount %}
+
+{% block content %}
+<style>
+   li {
+    list-style-type: none;
+    color: red;
+   }
+   ul {
+    margin-left: 0;
+    padding-left: 0;
+</style>
+<div class="login-page">
+  <div class="form">
+    <form class="login-form" method="POST" action="{% url 'account_login' %}">
+        {% csrf_token %}
+        <br><br>
+        <input type="text" name="login" placeholder="Email">
+        <input type="password" name="password" placeholder="Пароль">
+        <button>Войти</button>
+
+        <p><a href="{% url 'account_signup' %}">Регистрация</a></p>
+<a href="{% provider_login_url 'google' method='oauth2' %}">google</a>
+    </form>
+    {% if form.non_field_errors %}
+    <ul>{{ form.non_field_errors }}</ul>
+    {% endif %}
+  </div>
+</div>
+{% endblock %}

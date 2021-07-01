@@ -1,5 +1,5 @@
 from django.views.generic import ListView, DetailView, UpdateView, CreateView, DeleteView, TemplateView
-from .models import Post
+from .models import Post, Author
 from datetime import datetime
 from .filter import PostsFilter
 from .forms import PostForm
@@ -40,6 +40,7 @@ class PostDetailView(DetailView):
     template_name = 'post_detail.html'
     queryset = Post.objects.all()
 
+
 # дженерик для создания объекта
 class PostCreateView(LoginRequiredMixin, PermissionRequiredMixin, CreateView):
     template_name = 'posts_create.html'
@@ -50,7 +51,6 @@ class PostCreateView(LoginRequiredMixin, PermissionRequiredMixin, CreateView):
         context = super().get_context_data(**kwargs)
         context['is_not_premium'] = not self.request.user.groups.filter(name='authors').exists()
         return context
-
 
 
 
@@ -97,4 +97,10 @@ def upgrade_me(request):
     premium_group = Group.objects.get(name='authors')
     if not request.user.groups.filter(name='authors').exists():
         premium_group.user_set.add(user)
+
+    if not Author.objects.filter(authorUser=user).exists():
+        Author.objects.create(authorUser=user)
+
     return redirect('/create/')
+
+

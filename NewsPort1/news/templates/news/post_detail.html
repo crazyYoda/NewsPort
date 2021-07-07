@@ -1,9 +1,9 @@
 {% extends 'flatpages/default.html' %}
-{% load censor %} <!-- не забываем заранее загружать наши фильтры! -->
+{% load custom_filters %} <!-- не забываем заранее загружать наши фильтры! -->
 {% block title %} Post detail {% endblock title %}
 {% block content %}
 <br xmlns="http://www.w3.org/1999/html">
-<h3> {{ post.title|censor:'@#%&$' }} </h3>
+<h3> {{ post.title|censor }} </h3>
 <hr>
 <h5> {{ post.author.author }}, {{ post.time_in_new_post|date:'d M Y H:i' }}</h5>
 <div>

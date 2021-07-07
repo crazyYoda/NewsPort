@@ -53,7 +53,7 @@ class PostDetailView(PermissionRequiredMixin, DetailView):
         context = super(PostDetailView, self).get_context_data(**kwargs)
         try:
             context['PCC'] = PostCategory.objects.get(postThrough=self.kwargs['pk']).category
-            context['all_category'] = Category.objects.get(postThrough=self.kwargs.get('pk'))
+            context['all_category'] = Category.objects.get(name=self.kwargs.get('pk'))
             context['is_subscriber'] = Category.objects.get(pk=self.kwargs.get('pk')).subscriber.filter(username=self.request.user).exists()
 
         except Comment.DoesNotExist:

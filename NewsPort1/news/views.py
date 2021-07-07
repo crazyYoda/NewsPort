@@ -1,5 +1,6 @@
+from django.urls import reverse
 from django.views.generic import ListView, DetailView, UpdateView, CreateView, DeleteView, TemplateView
-from .models import Post, Author
+from .models import Post, Author, Category, PostCategory, Comment
 from datetime import datetime
 from .filter import PostsFilter
 from .forms import PostForm
@@ -17,12 +18,18 @@ class PostsList(ListView):
     context_object_name = 'posts'
     queryset = Post.objects.order_by('-id')
     paginate_by = 10
+    form_class = PostForm
 
-    # form_class = PostForm
+    def get_filter(self):
+        return PostsFilter(self.request.GET, queryset=super().get_queryset())
+
+    def get_queryset(self):
+        return self.get_filter().qs
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['time_now'] = datetime.utcnow()
+        context['categories'] = Category.objects.all()
         # context['form'] = PostForm()
         return context
 
@@ -36,9 +43,26 @@ class PostsList(ListView):
 
 
 # дженерик для получения деталей о посте
-class PostDetailView(DetailView):
+class PostDetailView(PermissionRequiredMixin, DetailView):
+    model = Post
     template_name = 'post_detail.html'
-    queryset = Post.objects.all()
+    context_object_name = 'post'
+    permission_required = ('news.add_post',)
+
+    def get_context_data(self, *args, **kwargs):
+        context = super(PostDetailView, self).get_context_data(**kwargs)
+        try:
+            context['PCC'] = PostCategory.objects.get(postThrough=self.kwargs['pk']).category
+            context['all_category'] = Category.objects.get(postThrough=self.kwargs.get('pk'))
+            context['is_subscriber'] = Category.objects.get(pk=self.kwargs.get('pk')).subscriber.filter(username=self.request.user).exists()
+
+        except Comment.DoesNotExist:
+            context['PCC'] = None
+            context['all_category'] = None
+        return context
+
+    def get_success_url(self):
+        return reverse('post_detail', kwargs={'pk': self.get_object().id})
 
 
 # дженерик для создания объекта
@@ -51,7 +75,6 @@ class PostCreateView(LoginRequiredMixin, PermissionRequiredMixin, CreateView):
         context = super().get_context_data(**kwargs)
         context['is_not_premium'] = not self.request.user.groups.filter(name='authors').exists()
         return context
-
 
 
 # class PostsDetailView(DetailView):
@@ -77,7 +100,8 @@ class PostUpdateView(LoginRequiredMixin, PermissionRequiredMixin, UpdateView):
     form_class = PostForm
     permission_required = ('news.change_post',)
 
-    # метод get_object мы используем вместо queryset, чтобы получить информацию об объекте, который мы собираемся редактировать
+    # метод get_object мы используем вместо queryset, чтобы получить информацию об объекте, который мы собираемся
+    # редактировать
     def get_object(self, **kwargs):
         id = self.kwargs.get('pk')
         return Post.objects.get(pk=id)
@@ -105,3 +129,11 @@ def upgrade_me(request):
     return redirect('/create/')
 
 
+class Subscriber(UpdateView):
+    model = Category
+    def post(self, request, *args, **kwargs):
+        if not Category.objects.get(pk=self.kwargs.get('pk')).subscriber.filter(username=self.request.user).exists():
+            Category.objects.get(pk=self.kwargs.get('pk')).subscriber.add(self.request.user)
+        else:
+            Category.objects.get(pk=self.kwargs.get('pk')).subscriber.remove(self.request.user)
+        return redirect(request.META.get('HTTP_REFERER'))

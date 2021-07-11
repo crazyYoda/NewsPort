@@ -2,13 +2,12 @@
 {% load custom_filters %} <!-- не забываем заранее загружать наши фильтры! -->
 {% block title %} Post detail {% endblock title %}
 {% block content %}
-<br xmlns="http://www.w3.org/1999/html">
 <h3> {{ post.title|censor }} </h3>
 <hr>
-<h5> {{ post.author.author }}, {{ post.time_in_new_post|date:'d M Y H:i' }}</h5>
+<h5> {{ post.author }}, {{ post.time_post|date:'d M Y H:i' }}</h5>
 <div>
-    {% if PCC %}
-    {{ post.get_new_post_display }} из категории:
+{% if PCC %}
+    {{ post.get_categoryType_display }} из категории:
 <div>
 {% if user.is_authenticated %}
     {% if not is_subscriber %}
@@ -40,12 +39,10 @@
 {% endif %}
 </div>
     <br><br>
-    <p>{{ post.content_new_post|censor }}</p>
+    <p>{{ post.text|censor }}</p>
     <br>
-
     {% else %}
         <h2>Категория не присвоена!</h2>
     {% endif %}
 </div>
-
 {% endblock content %}

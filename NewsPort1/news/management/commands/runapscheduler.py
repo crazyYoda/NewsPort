@@ -7,42 +7,50 @@ from django.conf import settings
 from apscheduler.schedulers.blocking import BlockingScheduler
 from apscheduler.triggers.cron import CronTrigger
 from django.contrib.auth.models import User
-from django.core.mail import send_mail
+from django.core.mail import send_mail, EmailMultiAlternatives
 from django.core.management.base import BaseCommand
 from django.template.loader import render_to_string
 from django_apscheduler.jobstores import DjangoJobStore
 from django_apscheduler.models import DjangoJobExecution
 from django_apscheduler import util
 
+from NewsPort1.news.models import Category, Post
 
 logger = logging.getLogger(__name__)
 
 
 def my_job():
-    end_date = datetime.datetime.now()
-    start_date = end_date - datetime.timedelta(days=7)
-    print('выполнение началось')
-    subject = f'Новости по подписке в категории'
-    for user in User.objects.all():
-        if len(user.category_set.all()) > 0:
-            from NewsPort1.news.models import Post
-            list_of_posts = Post.objects.filter(date_posted__range=(start_date, end_date),
-                                                category__in=user.category_set.all())
-            html_message = render_to_string(
-                'news/subs_email_each_month.html',
-                {
-                    'news': list_of_posts,
-                    'usr': user,
-                }
-            )
-            send_mail(
-                subject=subject,
-                message="message",
-                from_email='aiki_neru@mail.ru',
-                recipient_list=[user.email],
-                html_message=html_message
-            )
+    tags_post_dict = {}
+    tags_users_dict = {}
+    list_of_posts = []
+    list_of_users = []
+    tags_subs = {}
+    for tag in Category.objects.all():
+        tags_post_dict[tag.tag] = Post.objects.filter(create_time__gt= datetime.fromtimestamp(datetime.timestamp(datetime.now()) - 604800), categories=tag)
+        tags_users_dict[tag.tag] = Category.objects.get(tag=tag).subscribers.all()
+        list_of_posts.append(Post.objects.filter(create_time__gt= datetime.fromtimestamp(datetime.timestamp(datetime.now()) - 604800), categories=tag))
 
+
+    for tag in Category.objects.all():
+        posts = tags_post_dict[tag.tag]
+        users = tags_users_dict[tag.tag]
+        emails = []
+        for user in users:
+            emails.append(user.email)
+        html_content = render_to_string(
+            '../templates/subs_email.html',
+            {
+                'posts': posts, 'tag': tag.tag,
+            }
+        )
+        msg = EmailMultiAlternatives(
+            subject='Недельная рассылка новостей',
+            body='',
+            from_email='aiki_neru@mail.ru',
+            to=emails
+        )
+        msg.attach_alternative(html_content, "text/html")
+        msg.send()
 # The `close_old_connections` decorator ensures that database connections, that have become
 # unusable or are obsolete, are closed before and after our job has run.
 @util.close_old_connections

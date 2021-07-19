@@ -70,14 +70,6 @@ class PostCreateView(LoginRequiredMixin, PermissionRequiredMixin, CreateView):
         context['is_not_premium'] = not self.request.user.groups.filter(name='authors').exists()
         return context
 
-    # def post(self, request, *args, **kwargs):
-    #
-    #     send_mail(
-    #         subject=f'{PostCategory.categoryThrough}',
-    #         message=f'{user, Post.text}',
-    #         from_email='aiki_neru@mail.ru',
-    #
-    #     )
 
 
 class PostSearch(ListView):

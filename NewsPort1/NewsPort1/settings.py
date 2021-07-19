@@ -172,10 +172,6 @@ EMAIL_HOST_USER = 'test_for_skills'  # ваше имя пользователя,
 EMAIL_HOST_PASSWORD = 'AFSH1oca1oy$'  # пароль от почты
 EMAIL_USE_SSL = True
 
-ADMINS = [
-    ('admin', 'musasi1979@gmail.com'),
-    # список всех админов в формате ('имя', 'их почта')
-]
 
 SERVER_EMAIL = 'test_for_skills@mail.ru'
 

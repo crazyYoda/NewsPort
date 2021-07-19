@@ -27,7 +27,7 @@ def notify_subscribers(sender, instance, **kwargs):
             send_mail(
                 subject=subject,
                 message="message",
-                from_email='aiki_neru@mail.ru',
+                from_email='test_for_skills@mail.ru',
                 recipient_list=[subscriber.email],
                 html_message=html_message
             )

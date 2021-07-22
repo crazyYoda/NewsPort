@@ -1,7 +1,3 @@
-from _multiprocessing import send
-
-import instance
-from django.core.mail import mail_admins
 from django.urls import reverse
 from django.views.generic import ListView, DetailView, UpdateView, CreateView, DeleteView, TemplateView
 from .models import Post, Author, Category, PostCategory, Comment
@@ -15,10 +11,8 @@ from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMix
 
 from django.contrib.auth.models import Group
 from django.contrib.auth.decorators import login_required
-from django.shortcuts import redirect, render
+from django.shortcuts import redirect
 
-from django.db.models.signals import post_save, m2m_changed
-from django.dispatch import receiver # импортируем нужный декоратор
 
 
 class PostsList(ListView):
@@ -139,16 +133,5 @@ class Subscriber(UpdateView):
         else:
             Category.objects.get(pk=self.kwargs.get('pk')).subscribers.remove(self.request.user)
         return redirect(request.META.get('HTTP_REFERER'))
-
-
-# @receiver(m2m_changed, sender=Post.postCategory.through)
-# def notify_subscribers_categories(sender, instance, **kwargs):
-#     new_post_categories = Post.objects.order_by('-id')[0].postCategory.all()
-#     print(new_post_categories)
-#     subject = f'Новая статья в категории: {instance.postCategory.values("name")}'
-#     mail_admins(
-#         subject=subject,
-#         message= f'{instance.title}'
-#     )
 
 

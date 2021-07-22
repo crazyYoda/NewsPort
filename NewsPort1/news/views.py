@@ -1,3 +1,6 @@
+from _multiprocessing import send
+
+import instance
 from django.core.mail import mail_admins
 from django.urls import reverse
 from django.views.generic import ListView, DetailView, UpdateView, CreateView, DeleteView, TemplateView
@@ -5,12 +8,14 @@ from .models import Post, Author, Category, PostCategory, Comment
 from datetime import datetime
 from .filter import PostsFilter
 from .forms import PostForm
+from .tasks import send_email_for_subscribers
+
 
 from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMixin
 
 from django.contrib.auth.models import Group
 from django.contrib.auth.decorators import login_required
-from django.shortcuts import redirect
+from django.shortcuts import redirect, render
 
 from django.db.models.signals import post_save, m2m_changed
 from django.dispatch import receiver # импортируем нужный декоратор
@@ -70,6 +75,12 @@ class PostCreateView(LoginRequiredMixin, PermissionRequiredMixin, CreateView):
         context['is_not_premium'] = not self.request.user.groups.filter(name='authors').exists()
         return context
 
+    def form_valid(self, form):
+        form.save()
+        send_email_for_subscribers.delay()
+        return super().form_valid(form)
+    #     informer.delay()
+    #     return redirect('/')
 
 
 class PostSearch(ListView):

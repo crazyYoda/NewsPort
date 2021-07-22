@@ -3,9 +3,6 @@ from .views import PostsList, PostDetailView, PostSearch, PostCreateView, PostUp
 from .views import upgrade_me
 
 
-class ProductDeleteView:
-    pass
-
 
 urlpatterns = [
     path('', PostsList.as_view()),

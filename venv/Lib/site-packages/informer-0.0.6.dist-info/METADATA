@@ -1,0 +1,14 @@
+Metadata-Version: 2.1
+Name: informer
+Version: 0.0.6
+Summary: debug tool
+Home-page: https://github.com/IamWangYunKai/informer
+Author: Wang Yunkai
+Author-email: wangyunkai.zju@gmail.com
+License: UNKNOWN
+Platform: UNKNOWN
+Requires-Dist: opencv-python
+
+UNKNOWN
+
+

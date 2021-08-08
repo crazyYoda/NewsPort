@@ -3,6 +3,8 @@
 
 {% load custom_filters %}
 
+{% load cache %} <!-- Загружаем кэширование -->
+
 {% block title %}
 Posts
 {% endblock title %}
@@ -30,9 +32,11 @@ Posts
         <tr>
             <td>
             <a href="{% url 'post_detail' post.id %}">{{ post.title }}</a>
+                {% cache 300 urls %} <!-- Кэшируем отдельный блок на 300 секунд -->
             <a href="{% url 'post_update' post.id %}"><u>Редактировать</u></a> <!-- добавим ссылку на редактирование -->
 
             <a href="{% url 'post_delete' post.id %}"><u> Удалить </u></a> <!-- добавим ссылку на удаление -->
+                {% endcache %}
         </td>
 
             <td>

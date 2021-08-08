@@ -8,6 +8,9 @@ Posts
 {% endblock title %}
 
 {% block content %}
+{% load cache %} <!-- Загружаем кэширование -->
+     {% cache 300 headtable %} <!-- Кэшируем отдельный блок на 300 секунд -->
+
     <table>
         <tr>
             <td>
@@ -20,7 +23,7 @@ Posts
                 Текст
             </td>
         </tr>
-
+{% endcache %}
         <tr>
             <td>
                 {{ post.title|censor|truncatewords:4 }}
@@ -37,6 +40,7 @@ Posts
         </tr>
 
     </table>
+
 
 
 {% endblock content %}

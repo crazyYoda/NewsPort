@@ -5,10 +5,18 @@
 
 {% block title %} SEARCH {% endblock title %}
 {% block content %}
+
+{% load cache %} <!-- Загружаем кэширование -->
+    {% cache 30 header %} <!-- Кэшируем отдельный блок на 300 секунд -->
+
 <form method="GET">
     {{ filter.form }}
     <input type="submit" value="Найти">
 </form>
+
+    {% endcache %}
+
+
 
 <table>
     <thead>

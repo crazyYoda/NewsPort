@@ -10,9 +10,11 @@
     <input type="submit" value="Добавить пост">
 
 </form>
-
+{% load cache %} <!-- Загружаем кэширование -->
+ {% cache 300 button %} <!-- Кэшируем отдельный блок на 30 секунд -->
 {% if is_not_premium %}
 <button> <a href="/upgrade/"> Стать автором!</a> </button>
 {% endif %}
+{% endcache %}
 
 {% endblock content %}

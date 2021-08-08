@@ -4,6 +4,8 @@ from django.contrib.auth.models import User
 from django.db import models
 from django.db.models import Sum, CASCADE
 
+from django.core.cache import cache
+
 
 class Author(models.Model):
     authorUser = models.OneToOneField(User, on_delete=models.CASCADE)
@@ -30,7 +32,7 @@ class Author(models.Model):
 
 
 class Category(models.Model):
-    name = models.CharField(max_length=32, unique=True)
+    name = models.CharField(max_length=32, unique=True, verbose_name='Категория')
     subscribers = models.ManyToManyField(User, blank=True)
 
     def __str__(self):
@@ -42,7 +44,7 @@ class Category(models.Model):
 
 
 class Post(models.Model):
-    author = models.ForeignKey(Author, on_delete=models.CASCADE)
+    author = models.ForeignKey(Author, on_delete=models.CASCADE, verbose_name='Автор')
 
     NEWS = 'NW'
     ARTICLE = 'AR'
@@ -51,11 +53,14 @@ class Post(models.Model):
     )
 
     categoryType = models.CharField(max_length=2, choices=RUBRIC, default=ARTICLE)
-    time_post = models.DateTimeField(auto_now_add=True)
-    postCategory = models.ManyToManyField(Category, through='PostCategory')
-    title = models.CharField(max_length=128)
+    time_post = models.DateTimeField(auto_now_add=True, verbose_name='Время публикации')
+    postCategory = models.ManyToManyField(Category, through='PostCategory', verbose_name='Категория')
+    title = models.CharField(max_length=128, verbose_name='Заголовок')
     text = models.TextField()
     rating = models.SmallIntegerField(default=0)
+
+    def category(self):
+        return ','.join([str(p) for p in self.postCategory.all()])
 
 
     def like(self):
@@ -75,6 +80,10 @@ class Post(models.Model):
     def get_absolute_url(self):  # добавим абсолютный путь, чтобы после создания перебрасывало на страницу с постом
         return f'/posts/{self.id}'
 
+    def save(self, *args, **kwargs):
+        super().save(*args, **kwargs)  # сначала вызываем метод родителя, чтобы объект сохранился
+        cache.delete(f'post-{self.pk}')  # затем удаляем его из кэша, чтобы сбросить его
+
     class Meta:
         verbose_name = 'Публикация'
         verbose_name_plural = 'Публикации'
@@ -83,6 +92,9 @@ class Post(models.Model):
 class PostCategory(models.Model):
     postThrough = models.ForeignKey(Post, on_delete=models.CASCADE)
     categoryThrough = models.ForeignKey(Category, on_delete=models.CASCADE)
+
+    def __str__(self):
+        return self.categoryThrough
 
 
 class Comment(models.Model):

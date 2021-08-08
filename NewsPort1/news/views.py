@@ -5,6 +5,7 @@ from datetime import datetime
 from .filter import PostsFilter
 from .forms import PostForm
 from .tasks import send_email_for_subscribers
+from django.core.cache import cache # импортируем кэш
 
 
 from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMixin
@@ -42,6 +43,16 @@ class PostDetailView(PermissionRequiredMixin, DetailView):
     context_object_name = 'post'
     permission_required = ('news.add_post',)
 
+    def get_object(self, *args, **kwargs):  # переопределяем метод получения объекта, как ни странно
+        obj = cache.get(f'post-{self.kwargs["pk"]}', None)  # кэш очень похож на словарь, и метод get действует также. Он забирает значение по ключу, если его нет, то забирает None.
+
+        # если объекта нет в кэше, то получаем его и записываем в кэш
+        if not obj:
+            obj = super().get_object(queryset=self.queryset)
+            # obj = super().get_object()
+            cache.set(f'post-{self.kwargs["pk"]}', obj)
+        return obj
+
     def get_context_data(self, *args, **kwargs):
         context = super(PostDetailView, self).get_context_data(**kwargs)
         try:
@@ -56,6 +67,8 @@ class PostDetailView(PermissionRequiredMixin, DetailView):
 
     def get_success_url(self):
         return reverse('post_detail', kwargs={'pk': self.get_object().id})
+
+
 
 
 # дженерик для создания объекта

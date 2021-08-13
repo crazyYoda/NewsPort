@@ -16,7 +16,7 @@ class Command(BaseCommand):
 
         try:
             category = Category.objects.get(name=options['category'])
-            Post.objects.filter(category_name == category.name).delete()
+            Category.objects.filter(category_name == category.name).delete()
             self.stdout.write(self.style.SUCCESS(
                 f'Succesfully deleted all news from category {category.name}'))  # в случае неправильного подтверждения, говорим что в доступе отказано
         except Post.DoesNotExist:
